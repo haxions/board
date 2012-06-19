@@ -28,8 +28,10 @@ class BoardDB{
             $indexAry[$id] = $index;
         }
         foreach($contents AS $con){
-            $index = $indexAry[$con['thread_id']];
-            $result[$index]['res'][] = array('contents'=>$con['contents']);
+            if(isset($indexAry[$con['thread_id']])){
+                $index = $indexAry[$con['thread_id']];
+                $result[$index]['res'][] = array('contents'=>$con['contents']);
+            }
         }
         return $result;
     }
