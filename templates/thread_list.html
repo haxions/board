@@ -1,0 +1,31 @@
+{{include file="header.html"}}
+<div id="wrapper_all">
+  {{include file="nav.html"}}
+  <div id="thread_tree">
+    {{foreach from=$thread_list item=book}}
+    <article class="thread_book" id="{{$book.id}}">
+      <header class="thread_title2"><h3>{{$book.title|escape}}</h3></header>
+      {{if $book.res[0] }}
+      <section class="res_box2">
+	<div class="res_baloon">{{$book.res[0].contents}}</div>
+	<div class="res_icon"><img src="files/icon_{{1|rand:5}}.png" /></div>
+      </section>
+      {{/if}}
+      {{if $book.res[1] }}
+      <section class="res_box{{3|rand:5}}">
+	<div class="res_baloon">{{$book.res[1].contents}}</div>
+	<div class="res_icon"><img src="files/icon_{{1|rand:5}}.png" /></div>
+      </section>
+      {{/if}}
+      {{if $book.res[2] }}
+      <section class="res_box{{3|rand:5}}">
+	<div class="res_baloon">{{$book.res[2].contents}}</div>
+	<div class="res_icon"><img src="files/icon_{{1|rand:5}}.png" /></div>
+      </section>
+      {{/if}}
+      <nav class="read_more"><p><a href="http://{{$smarty.server.HTTP_HOST|escape}}/index.php?thread={{$book.id}}">続きを読む</a></p></nav>
+    </article>
+{{/foreach}}
+  </div> <!-- thread_tree -->
+</div> <!-- wapper_all -->
+{{include file="footer.html"}}

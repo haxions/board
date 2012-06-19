@@ -72,12 +72,6 @@ padding-top:10px;
 #board_header h1 a{
 color:#FFF;
 }
-/*** guns_form ***/
-#guns_form{
-width:300px;
-background-color:red;
-display:none;
-}
 /*** button_area ***/
 #button_area ul, #button_area li{
 margin:0px 0px 10px 0px;
@@ -89,12 +83,17 @@ height:60px;
 color:#000;
 background:#9C9 url("fl_point.png") no-repeat;
 background-size:contain;
-line-height:60px;
 border-radius:0px 10px 10px 0px;
 box-shadow: 5px 5px 5px #696;
 font-weight:bold;
 opacity:0.7;
 cursor:pointer;
+}
+#button_area a{
+    display:block;
+    padding:25px 5px;
+    color:#000;
+    text-decoration:none;
 }
 #button_area li.selected{
 color:#993;
@@ -165,6 +164,8 @@ padding:5px 10px;
 overflow:hidden;
 }
 .read_more{
+clear:both;
+padding-right:10px;
 text-align:right;
 }
 /*** res_box2 ***/
@@ -207,7 +208,7 @@ height:55px;
 overflow:hidden;
 background-color:#FFF;
 opacity:0.7;
-z-index:10;
+z-index:9;
 }
 .res_box3 .res_icon{
 position:relative;
@@ -235,7 +236,7 @@ height:95px;
 overflow:hidden;
 background-color:#FFF;
 opacity:0.7;
-z-index:10;
+z-index:9;
 }
 .res_box4 .res_icon{
 position:relative;
@@ -263,7 +264,7 @@ height:95px;
 overflow:hidden;
 background-color:#FFF;
 opacity:0.7;
-z-index:10;
+z-index:9;
 }
 .res_box5 .res_icon{
 position:relative;

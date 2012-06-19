@@ -6,6 +6,9 @@ class BoardDB{
     /**
      * すべてのスレッドのList情報を取得
      **/
+    function __construct(){
+        date_default_timezone_set('Asia/Tokyo');
+    }
     public function getThreadList(){
         $db = $this->db_connect();
         $stmt = $db->query("(SELECT thread_id,contents,id FROM response GROUP BY thread_id) UNION (SELECT f.thread_id, f.contents, f.id FROM (SELECT thread_id, max(id) AS max_id FROM response GROUP BY thread_id) AS x INNER JOIN response AS f ON f.thread_id = x.thread_id AND f.id >= x.max_id-1 ORDER BY thread_id);");
@@ -73,16 +76,16 @@ class BoardDB{
     /**
      * あるスレッドにレスを追加
      **/
-    public function setResponse($thread, $response, $author){
+    public function setResponse($thread_index, $contents, $author){
         $db = $this->db_connect();
         try{
             $date = date('Y-m-d H:i:s');
             $db->beginTransaction();
             $sql = "INSERT INTO response(id, thread_id, contents, author,date) SELECT COUNT(id), :thread, :res, :author,:date FROM response where thread_id = :thread";
-            $param = array(':thread'=>$thread, ':res'=>$response,':author'=>$author,':date'=>$date);
+            $param = array(':thread'=>$thread_index, ':res'=>$contents,':author'=>$author,':date'=>$date);
             $stmt = $db->prepare($sql);
             $stmt->execute($param);
-            $db->query("UPDATE thread SET last_update='${date}' WHERE id=${thread}");
+            $db->query("UPDATE thread SET last_update='${date}' WHERE id=${thread_index}");
             $db->commit();
         }catch(Exception $e){
             $db->rollBack();
@@ -113,12 +116,12 @@ class BoardDB{
         }
     }
 }
-$bdb = new BoardDB();
-print_r($bdb->getThreadContents(2));
+//$bdb = new BoardDB();
+//print_r($bdb->getThreadContents(2));
 //$bdb->getThreadList();
 //$bdb->createTable();
 //$id = $bdb->setNewThread('あの日に戻れるなら');
-//$bdb->setResponse($id, '猫のダンス','Cat');
+//$bdb->setResponse(5, '猫のダンス','Cat');
 /*
 $id = $bdb->setNewThread('あの日に戻れるなら');
 $bdb->setResponse($id, '猫のダンス','Cat');

@@ -1,0 +1,16 @@
+{{include file="header.html"}}
+<div id="wrapper_all">
+  {{include file="nav.html"}}
+  <div id="thread_tree">
+    <div id="new_form">
+      <form action="index.php" method="POST" id="new" name="post_form" accept-charset="UTF-8" onsubmit="return check_form()" >
+	<p>タイトル: <input type="text" name="title" id="form_title" /></p>
+	<p>投稿者: <input type="text" name="author" id="form_author" /></p>
+	<p>コメント: <textarea rows="4" cols="40" name="contents" id="form_contents"></textarea></p>
+	<p><input type="hidden" name="type" value="new" />
+	<p><input type="submit" name="submit" id="form_submit"  value="投稿" /></p>
+      </form>
+    </div> <!-- guns_form -->
+  </div> <!-- thread_tree -->
+</div> <!-- wapper_all -->
+{{include file="footer.html"}}

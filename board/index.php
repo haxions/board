@@ -1,109 +1,77 @@
 <?php
 
 // Smartyを取り込む
-include_once("../libs/functions.php");
-include_once("../libs/MySmarty.class.php");
-
-// セッションスタートとハイジャック対策
-session_start();
-session_regenerate_id(true);
+define('LIBS_PATH',dirname(__FILE__).'/../libs/');
+include_once(LIBS_PATH.'functions.php');
+include_once(LIBS_PATH.'MySmarty.class.php');
+include_once(LIBS_PATH.'BoardDB.php');
 
 // Smartyインスタンスの生成
 $smarty = new MySmarty;
-
+// smartyテンプレートの種類
+$ttype = 'thread_list';
 // 一覧表示のフラグ
 $is_list = true;
-// クッションページのフラグ
-$is_cushion = false;    
-// 投稿が押されたかどうかの判定
-if (isset($_POST['submit']) ) {
-    // POST + DATE
-    // titleはスレ作成時，topic_idはレス投稿時，linkは返信時につく
-    // スレ作成時のtopic_idとスレ投稿時のres_idはこちらで付与(衝突を避けるため
+if(isset($_POST['submit'])){
+    // スレッド作成・レス追加
+    // titleはスレ作成時，threadはレス投稿時
+    // スレ作成時のthread_indexとスレ投稿時のres_idはこちらで付与(衝突を避けるため
     if( isset($_POST['title']) ){
         $title = htmlspecialchars($_POST['title']);
     }
-    if( isset($_POST['link']) ){
-        $link = htmlspecialchars($_POST['link']);
-    }
-    if( isset($_POST['topic']) ){
-        $topic_id = htmlspecialchars($_POST['topic']);
+    if( isset($_POST['thread']) ){
+        $thread_index = htmlspecialchars($_POST['thread']);
     }
     $author = htmlspecialchars($_POST['author']);
-    $contents = htmlspecialchars($_POST['text']);
-    $date = date("Y/m/d - H:i:s");
-
-    // 認証を関数化(DBへ問い合わせをして認証を行う)
-    if (Authenticator($_POST["name"] , $_POST["password"])) {
-        
-        // 認証の鍵を保存しておく
-        $_SESSION["name"] = $_POST["name"];
-       
-        // 認証に成功したので、blog_edit.phpへリダイレクトす
-        header("Location:HTTP://".$_SERVER['HTTP_HOST']."/~dwango041/24/blog_edit.php" );
-        exit;
+    $contents = htmlspecialchars($_POST['contents']);
+    // データをDBに保存
+    $bdb = new BoardDB();
+    if(isset($title)){
+        $thread_index = $bdb->setNewThread($title);
     }
-   
-    // ここに遷移してきた場合はログインに失敗している
-    // 認証が失敗した場合のエラーメッセージの作成
-    if ($_POST["name"] == "") {
-        // ユーザー名が入力されていない旨のメッセージ
-        $error_message = "のーねーむ";
-    } else {
-        // 値が入力されていたが、間違えていた:旨のメッセージ
-        $error_message = "ねーむかぱすちがう";
-    }
-    
-    $smarty->assign("error_message", $error_message);
-    $smarty->assign("name",$_POST["name"]);
-    $is_list = false;
+    $bdb->setResponse($thread_index, $contents, $author);
+    // そのページに移動
+    header("Location: http://{$_SERVER['HTTP_HOST']}/index.php?thread={$thread_index}");
+    exit;
 }elseif(isset($_GET['thread'])){
-    if(ctype_digit($_GET['thread'])){
-        $is_list = false;
-        $thread_index = $_GET['thread'];
-        $thread_title = '猫神様って本当にいるのかしら？';
-        $res = array(
-                     array('res_id'=>'321_1',
-                           'res_author'=>'ペンギンさん',
-                           'res_icon'=>3,
-                           'res_contents'=>'そんなこと言ったってどうしようもないでしょ？'),
-                     array('res_id'=>'321_2',
-                           'res_author'=>'ウサギさん',
-                           'res_icon'=>4,
-                           'res_contents'=>'うへへｈｗｗｗ http://yahoo.co.jp/'),
-                     array('res_id'=>'321_3',
-                           'res_author'=>'蛇さん',
-                           'res_icon'=>1,
-                           'res_contents'=>'ぎゃおー！'),
-                     array('res_id'=>'321_4',
-                           'res_author'=>'人間さん',
-                           'res_icon'=>2,
-                           'res_contents'=>'ちみたち、どうしてそんな子というの？')
-                     );
-        $smarty->assign('thread_index',$thread_index);
-        $smarty->assign('thread_title',$thread_title);
-        $smarty->assign('resary',$res);
+    // あるスレッドを表示
+    $thread_index = htmlspecialchars($_GET['thread']);
+    if(ctype_digit($thread_index)){
+        $bdb = new BoardDB();
+        $thread_data = $bdb->getThreadContents($thread_index);
+        if(count($thread_data['res'])){
+            $smarty->assign('thread_data',$thread_data);
+            $smarty->assign('thread_index',$thread_index);
+            $is_list = false;
+            $ttype = 'thread_contents';
+        }
     }
 }elseif(isset($_GET['url'])){
+    // クッションページ用
     $is_list = false;
-    $is_cushion = true;
-    $url = $_GET['url'];
-    if($_SERVER['HTTP_HOST'] == $url){
+    $ttype = 'cushion';
+    $url = htmlspecialchars($_GET['url']);
+    if(strpos($url, 'http://'.$_SERVER['SERVER_NAME']) === 0){
         header("Location: $url");
         exit;
     }
     $smarty->assign('url',$url);
+}elseif(isset($_GET['cmd'])){
+    // その他の操作
+    $cmd = htmlspecialchars($_GET['cmd']);
+    if($cmd == 100){
+        $is_list = false;
+        $ttype = 'thread_new';
+    }
 }
 // リスト表示
 if($is_list){
-    $data = array(
-                  array('thread_id'=>321,'thread_title'=>'死ぬ前に何食べたい？','res'=>array(array('res_id'=>'asdfa89x', 'res_icon'=>5, 'res_contents'=>'そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・'),array('res_id'=>'asdfa89x', 'res_icon'=>2, 'res_contents'=>'そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・'),array('res_id'=>'asdfa89x', 'res_icon'=>1, 'res_contents'=>'そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・'))),
-                  array('thread_id'=>322,'thread_title'=>'眠たいよね','res'=>array(array('res_id'=>'asdfa89x', 'res_icon'=>4, 'res_contents'=>'そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・'),array('res_id'=>'asdfa89x', 'res_icon'=>1, 'res_contents'=>'そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・'),array('res_id'=>'asdfa89x', 'res_icon'=>3, 'res_contents'=>'そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・そんなこといってもねぇ～自分が死ぬことなんて考えたことないし、、どうすればいいのかわからないよ・・'))));
-    $smarty->assign('dataary',$data);
+    $bdb = new BoardDB();
+    $thread_list = $bdb->getThreadList();
+    $smarty->assign('thread_list',$thread_list);
+    $ttype = 'thread_list';
 }
-// 表示
-if($is_cushion){
-    $smarty->display("cushion.html");
-}else{
-    $smarty->display("board.html");
+// 表示 (テンプレート選択)
+if(!empty($ttype)){
+    $smarty->display($ttype.'.html');
 }
