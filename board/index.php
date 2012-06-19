@@ -25,11 +25,15 @@ if(isset($_POST['submit'])){
     $author = htmlspecialchars($_POST['author']);
     $contents = htmlspecialchars($_POST['contents']);
     // データをDBに保存
-    $bdb = new BoardDB();
-    if(isset($title)){
-        $thread_index = $bdb->setNewThread($title);
-    }
-    $bdb->setResponse($thread_index, $contents, $author);
+    if(!empty($contents)){
+        $bdb = new BoardDB();
+        if(isset($title)){
+            if(!empty($title)){
+                $thread_index = $bdb->setNewThread($title);
+            }
+        }
+        $bdb->setResponse($thread_index, $contents, $author);
+    }else $thread_index = "abc";
     // そのページに移動
     header("Location: http://{$_SERVER['HTTP_HOST']}/index.php?thread={$thread_index}");
     exit;
