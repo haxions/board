@@ -92,8 +92,11 @@ cursor:pointer;
 #button_area a{
     display:block;
     padding:25px 5px;
-    color:#000;
+    color:#993;
     text-decoration:none;
+}
+#button_area a:hover{
+    color:#000;
 }
 #button_area li.selected{
 color:#993;
