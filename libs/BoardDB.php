@@ -38,10 +38,10 @@ class BoardDB{
     /**
      * あるスレッドの中身をすべて取得
      **/
-    public function getThreadContents($thread_id){
+    public function getThreadContents($thread_index){
         $db = $this->db_connect();
         $sql = "SELECT title FROM thread WHERE id=:thread";
-        $param = array(':thread'=>$thread_id);
+        $param = array(':thread'=>$thread_index);
         $stmt = $db->prepare($sql);
         $stmt->execute($param);
         $title = $stmt->fetch(PDO::FETCH_COLUMN,0);
