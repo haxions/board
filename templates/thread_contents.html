@@ -3,20 +3,20 @@
   {{include file="nav.html"}}
   <div id="thread_tree">
     <article class="thread_box" id="{{$thread_index}}">
-      <header class="thread_title"><h3>{{$thread_data.title}}</h3></header>
-      {{foreach from=$thread_data.res item=res}}
+      <header class="thread_title"><h3>{{$data_ary.title|escape}}</h3></header>
+      {{foreach from=$data_ary.res item=res}}
       <section class="res_box">
         <header class="res_header">
-	  <p class="res_author">{{$res.author}}</p><p class="res_date">{{$res.date}}</p>
+	  <p class="res_author">{{$res.author|escape}}</p><p class="res_date">{{$res.date|escape}}</p>
 	</header>
-        <p class="res_contents">{{$res.contents|nl2br|auto_link}}</p>
+        <p class="res_contents">{{$res.contents|escape|nl2br|auto_link}}</p>
       </section>
       {{/foreach}}
       <section class="res_box res_form">
 	<form action="index.php" method="POST" accept-charset="UTF-8" name="post_form" onsubmit="return check_form()">
 	  <p>投稿者: <input type="text" name="author" /></p>
 	  <p>コメント: <textarea rows="4" cols="40" name="contents"></textarea></p>
-	  <input type="hidden" name="thread" value="{{$thread_index}}" />
+	  <input type="hidden" name="index" value="{{$index|escape}}" />
 	  <input type="hidden" name="type" value="response" />
 	  <input type="submit" name="submit" value="送信" />
 	</form>

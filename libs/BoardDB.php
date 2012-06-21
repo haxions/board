@@ -11,6 +11,7 @@ class BoardDB{
     }
     public function getThreadList(){
         $db = $this->db_connect();
+        if($db == null) return false;
         $stmt = $db->query("(SELECT thread_id,contents,id FROM response GROUP BY thread_id) UNION (SELECT f.thread_id, f.contents, f.id FROM (SELECT thread_id, max(id) AS max_id FROM response GROUP BY thread_id) AS x INNER JOIN response AS f ON f.thread_id = x.thread_id AND f.id >= x.max_id-1 ORDER BY thread_id);");
         $contents = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt = $db->query('SELECT id,title,last_update FROM thread ORDER BY last_update DESC');
@@ -40,6 +41,7 @@ class BoardDB{
      **/
     public function getThreadContents($thread_index){
         $db = $this->db_connect();
+        if($db == null) return false;
         $sql = "SELECT title FROM thread WHERE id=:thread";
         $param = array(':thread'=>$thread_index);
         $stmt = $db->prepare($sql);
@@ -58,6 +60,7 @@ class BoardDB{
      **/
     public function setNewThread($title){
         $db = $this->db_connect();
+        if($db == null) return false;
         try{
             $date = date('Y-m-d H:i:s');
             $db->beginTransaction();
@@ -73,13 +76,19 @@ class BoardDB{
             return $id;
         }catch(Exception $e){
             $db->rollBack();
+            return false;
         }
     }
     /**
      * あるスレッドにレスを追加
      **/
-    public function setResponse($thread_index, $contents, $author){
+    public function setResponse($params){
+        if(count($params) != 3) return false;
+        $thread_index = $params[0];
+        $contents = $params[1];
+        $author = $params[2];
         $db = $this->db_connect();
+        if($db == null) return false;
         try{
             $date = date('Y-m-d H:i:s');
             $db->beginTransaction();
@@ -89,8 +98,10 @@ class BoardDB{
             $stmt->execute($param);
             $db->query("UPDATE thread SET last_update='${date}' WHERE id=${thread_index}");
             $db->commit();
+            return true;
         }catch(Exception $e){
             $db->rollBack();
+            return false;
         }
     }
     /**
@@ -98,20 +109,22 @@ class BoardDB{
      **/
     public function createTable(){
         $db = $this->db_connect();
-        $db->query("DROP TABLE IF EXISTS thread,response");
-        $db->query("CREATE TABLE thread(id INT AUTO_INCREMENT PRIMARY KEY,title VARCHAR(128), last_update DATETIME)");
-        $db->query("CREATE TABLE response(no INT AUTO_INCREMENT PRIMARY KEY,thread_id INT NOT NULL, id INT NOT NULL, contents TEXT, author VARCHAR(56), date DATETIME DEFAULT CURRENT_TIMESTAMP)");
+        if($db != null){
+            $db->query("DROP TABLE IF EXISTS thread,response");
+            $db->query("CREATE TABLE thread(id INT AUTO_INCREMENT PRIMARY KEY,title VARCHAR(128), last_update DATETIME)");
+            $db->query("CREATE TABLE response(no INT AUTO_INCREMENT PRIMARY KEY,thread_id INT NOT NULL, id INT NOT NULL, contents TEXT, author VARCHAR(56), date DATETIME DEFAULT CURRENT_TIMESTAMP)");
         }
+    }
     /**
      * DBとの接続
      **/
     private function db_connect(){
+        $file = dirname(__FILE__).'/dbpswd';
         try{
-            $dsn = "mysql:host=localhost;dbname=board";
-            $user = 'root';
-            $pass = 'v3CcKmjM';
-            $pdo = new PDO($dsn, $user, $pass);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            if(!file_exists($file)) return null;
+            $ary = explode("\t", file_get_contents($file));
+            $pdo = new PDO($ary[0], $ary[1], $ary[2]);
+             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $pdo;
         }catch(PDOException $e){
             var_dump($e->getMessage());
@@ -119,22 +132,7 @@ class BoardDB{
     }
 }
 //$bdb = new BoardDB();
-//print_r($bdb->getThreadContents(2));
 //$bdb->getThreadList();
 //$bdb->createTable();
 //$id = $bdb->setNewThread('あの日に戻れるなら');
-//$bdb->setResponse(5, '猫のダンス','Cat');
-/*
-$id = $bdb->setNewThread('あの日に戻れるなら');
-$bdb->setResponse($id, '猫のダンス','Cat');
-$bdb->setResponse($id, 'アヒル','Cat');
-$bdb->setResponse($id, '人生をやり直したい','Cat');
-$bdb->setResponse($id, 'もう一度大学受験したい','Cat');
-$bdb->setResponse($id, '結婚やり直したいｗ','Cat');
-$id = $bdb->setNewThread('お勧めの本');
-$bdb->setResponse($id, '吾輩は','Cat');
-$bdb->setResponse($id, '一寸法師','Cat');
-$bdb->setResponse($id, 'ドラゴンボール','Cat');
-$bdb->setResponse($id, 'それ漫画だろ','Cat');
-$bdb->setResponse($id, 'ルパン三世','Cat');
-*/
+//$bdb->setResponse(3, '猫のダンス','Cat');
