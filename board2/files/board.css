@@ -1,0 +1,279 @@
+/*** overwide ***/
+html,body{
+margin:0px;
+padding:0px;
+height:100%;
+width:100%;
+}
+h1, h2, h3, h4, h5,p{
+margin:0px;
+padding:0px;
+}
+html{
+background:#CFC;
+}
+/*** wrapper ***/
+#board_header{
+position:fixed;
+top:0px;
+left:0px;
+height:80px;
+width:100%;
+padding:0px 0px 0px 10px;
+color:#FFF;
+background-color:#9C9;
+background-image: url("fl_corn.png"),url("fl_corn2.png");
+background-position: top left,bottom right;
+background-repeat:no-repeat;
+z-index:10;
+}
+#board_footer{
+position:fixed;
+bottom:0px;
+width:100%;
+clear:both;
+height:20px;
+background-color:#9C9;
+color:#FFF;
+text-align:center;
+font-size:12px;
+z-index:10px;
+}
+#wrapper_all{
+clear:both;
+width:100%;
+background:#CFC url("back2.png") repeat-y right;
+}
+#button_area{
+position:fixed;
+top:50px;
+height:300px;
+width:120px;
+opacity:1;
+margin-top:60px;
+z-index:10;
+}
+#thread_tree{
+margin:0px auto auto 150px;
+padding-top:100px;
+height:100%;
+}
+#thread_tree:after {
+    content: "";
+    display: block;
+    clear: both;
+    height: 1px;
+    overflow: hidden;
+}
+/*** header ***/
+#board_header h1{
+padding-top:10px;
+}
+#board_header h1 a{
+color:#FFF;
+}
+/*** button_area ***/
+#button_area ul, #button_area li{
+margin:0px 0px 10px 0px;
+padding:0px;
+list-style:none;
+}
+#button_area li{
+height:60px;
+color:#000;
+background:#9C9 url("fl_point.png") no-repeat;
+background-size:contain;
+border-radius:0px 10px 10px 0px;
+box-shadow: 5px 5px 5px #696;
+font-weight:bold;
+opacity:0.7;
+cursor:pointer;
+}
+#button_area a{
+    display:block;
+    padding:25px 5px;
+    color:#000;
+    text-decoration:none;
+}
+#button_area a:hover{
+    color:#993;
+}
+#button_area li.selected{
+color:#993;
+opacity:1;
+}
+img{
+width:100%;
+}
+/*** thread ***/
+.thread_box{
+margin:20px 0px;
+background-color:#EEE;
+border-left:10px solid #696;
+border-bottom:5px solid #696;
+}
+.thread_title{
+background-color:#696;
+color:#FFF;
+padding:5px 20px;
+}
+.res_box{
+padding-left:10px;
+padding-bottom:10px;
+}
+.res_header{
+clear:both;
+height:20px;
+border-left:10px solid #696;
+border-bottom:2px solid #696;
+padding-left:5px;
+margin-left:0px;
+font-weight:bold;
+}
+.res_author{
+float:left;
+}
+.res_date{
+float:left;
+padding-left:30px;
+}
+.res_contents{
+clear:both;
+padding-left:10px;
+}
+.res_more{
+text-align:center;
+}
+.more_btn{
+width:200px;
+height:30px;
+background-color:#CFC;
+border:4px ridge #696;
+border-radius:10px;
+font-weight:bold;
+}
+/*** thread_book ***/
+.thread_book{
+float:left;
+width:300px;
+height:420px;
+background-color:#EEE;
+margin:10px;
+border-radius:10px;
+box-shadow:10px 10px 10px #696;
+}
+.thread_title2{
+padding:5px 10px;
+height:20px;
+overflow:hidden;
+}
+.read_more{
+clear:both;
+padding-right:10px;
+text-align:right;
+}
+/*** res_box2 ***/
+.res_box2{
+font-size:12px;
+width:300px;
+height:150px;
+background:#FFF url('hako_1.png') no-repeat;
+}
+.res_box2 .res_baloon{
+position:relative;
+top:33px;
+left:120px;
+width:170px;
+height:85px;
+overflow:hidden;
+}
+.res_box2 .res_icon{
+position:relative;
+top:-60px;
+width:100px;
+height:100px;
+}
+/*** res_box3 ***/
+.res_box3{
+float:left;
+font-size:12px;
+border-width:0px;
+background-color:#939;
+width:150px;
+height:200px;
+background:#FFF url('hako_2.png') no-repeat;
+}
+.res_box3 .res_baloon{
+position:relative;
+left:0px;
+top:10px;
+width:150px;
+height:55px;
+overflow:hidden;
+background-color:#FFF;
+opacity:0.7;
+z-index:9;
+}
+.res_box3 .res_icon{
+position:relative;
+top:-10px;
+left:30px;
+width:100px;
+height:100px;
+}
+/*** res_box4 ***/
+.res_box4{
+float:left;
+font-size:12px;
+border-width:0px;
+background-color:#369;
+width:150px;
+height:200px;
+background:#FFF url('hako_3.png') no-repeat;
+}
+.res_box4 .res_baloon{
+position:relative;
+left:0px;
+top:10px;
+width:100px;
+height:95px;
+overflow:hidden;
+background-color:#FFF;
+opacity:0.7;
+z-index:9;
+}
+.res_box4 .res_icon{
+position:relative;
+top:0px;
+left:50px;
+width:100px;
+height:100px;
+}
+/*** res_box5 ***/
+.res_box5{
+float:left;
+font-size:12px;
+border-width:0px;
+background-color:#369;
+width:150px;
+height:200px;
+background:#FFF url('hako_4.png') no-repeat;
+}
+.res_box5 .res_baloon{
+position:relative;
+left:50px;
+top:100px;
+width:100px;
+height:95px;
+overflow:hidden;
+background-color:#FFF;
+opacity:0.7;
+z-index:9;
+}
+.res_box5 .res_icon{
+position:relative;
+top:-80px;
+left:30px;
+width:100px;
+height:100px;
+}
