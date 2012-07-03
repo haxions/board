@@ -14,7 +14,7 @@
       {{/foreach}}
       <section class="res_box res_form">
 	<!--<form action="index.php" method="POST" accept-charset="UTF-8" name="post_form" onsubmit="return check_form()">-->
-	<form action="./{{$thread_index|escape}}" method="POST" accept-charset="UTF-8" name="post_form" onsubmit="return check_form()">
+	<form action="http://{{$smarty.server.HTTP_HOST|escape}}{{$smarty.server.PHP_SELF|escape}}" method="POST" accept-charset="UTF-8" name="post_form" onsubmit="return check_form()">
 	  <p>投稿者: <input type="text" name="author" /></p>
 	  <p>コメント: <textarea rows="4" cols="40" name="contents"></textarea></p>
 	  <input type="hidden" name="index" value="{{$thread_index|escape}}" />

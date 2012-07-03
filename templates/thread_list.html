@@ -24,8 +24,8 @@
 	<div class="res_icon"><img src="files/icon_{{1|rand:5}}.png" /></div>
       </section>
       {{/if}}
-      <!--<nav class="read_more"><p><a href="http://{{$smarty.server.HTTP_HOST|escape}}/index.php?index={{$book.id|escape}}">続きを読む</a></p></nav>-->
-      <nav class="read_more"><p><a href="http://{{$smarty.server.HTTP_HOST|escape}}/index.php/thread/{{$book.id|escape}}">続きを読む</a></p></nav>
+      <!--<nav class="read_more"><p><a href="http://{{$smarty.server.HTTP_HOST|escape}}{{$smarty.server.PHP_SELF}}?index={{$book.id|escape}}">続きを読む</a></p></nav>-->
+      <nav class="read_more"><p><a href="http://{{$smarty.server.HTTP_HOST|escape}}{{$smarty.server.PHP_SELF}}/thread/{{$book.id|escape}}">続きを読む</a></p></nav>
     </article>
     {{/if}}
 {{/foreach}}

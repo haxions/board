@@ -1,3 +1,5 @@
+{{assign var='search_index' value=$smarty.server.SCRIPT_NAME|strrpos:'/'}}
+{{assign var='path' value=$smarty.server.SCRIPT_NAME|substr:0:$search_index|escape}}
 <!doctype html>
 <html>
   <head>
@@ -5,12 +7,12 @@
     <title> コモンズ文庫 </title>
     <meta http-equiv="Content-Script-type" content="text/javascript">
     <meta http-equiv="Content-Stype-type" content="text/css">
-    <link rel="stylesheet" href="files/board.css" type="text/css">
-    <script src="files/jquery.js"></script>
-    <script src="files/board.js"></script>
+     <link rel="stylesheet" href="http://{{$smarty.server.HTTP_HOST|escape}}{{$path}}/files/board.css" type="text/css">
+    <script src="http://{{$smarty.server.HTTP_HOST|escape}}{{$path}}/files/jquery.js"></script>
+    <script src="http://{{$smarty.server.HTTP_HOST|escape}}{{$path}}/files/board.js"></script>
   </head>
   <body>
     <header id="board_header">
-      <h1><a href="http://{{$smarty.server.HTTP_HOST|escape}}/"> コモンズ文庫 </a></h1>
+      <h1><a href="http://{{$smarty.server.HTTP_HOST|escape}}{{$path}}/"> コモンズ文庫 </a></h1>
       <h5> 本サイトで使用している画像は<a href="http://commons.nicovideo.jp/">ニコニ・コモンズ</a>より利用可能なもののみ拝借しております．製作者の皆様にお礼申し上げます．</h5>
     </header>
