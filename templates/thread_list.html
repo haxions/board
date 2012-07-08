@@ -1,3 +1,5 @@
+{{assign var='search_index' value=$smarty.server.SCRIPT_NAME|strrpos:'/'}}
+{{assign var='path' value=$smarty.server.SCRIPT_NAME|substr:0:$search_index|escape}}
 {{include file="header.html"}}
 <div id="wrapper_all">
   {{include file="nav.html"}}
@@ -25,7 +27,7 @@
       </section>
       {{/if}}
       <!--<nav class="read_more"><p><a href="http://{{$smarty.server.HTTP_HOST|escape}}{{$smarty.server.PHP_SELF}}?index={{$book.id|escape}}">続きを読む</a></p></nav>-->
-      <nav class="read_more"><p><a href="http://{{$smarty.server.HTTP_HOST|escape}}{{$smarty.server.PHP_SELF}}/thread/{{$book.id|escape}}">続きを読む</a></p></nav>
+      <nav class="read_more"><p><a href="http://{{$smarty.server.HTTP_HOST|escape}}{{$path}}/thread/{{$book.id|escape}}">続きを読む</a></p></nav>
     </article>
     {{/if}}
 {{/foreach}}
