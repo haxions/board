@@ -11,7 +11,7 @@ $app = new Slim(array(
                       'templates.path' => '../templates',
                       'view' => new SmartyView()
                       ));
-
+    
 // HOME (cushion)
 $app->get('/', function() use ($app){
         $url = $app->request()->get('url');
@@ -39,19 +39,15 @@ $app->post('/', function() use ($app){
         $title = $request->post('title');
         $author = $request->post('author');
         $contents = $request->post('contents');
+        $path = substr( $_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'],'/') );
         if( !empty($title) && !empty($author) && !empty($contents) ){
             $id = $board->accessDB('setthread',$title);
             if($id !== false){
                 $is_set = $board->accessDB( 'setcontents', array($id, $contents, $author) );
-                if($is_set !== false){
-                    
-                    $list = $board->accessDB('getcontents',$id);
-                    return $app->render( 'thread_contents.html', array('data_ary'=>$list) );
-                }
-                header("Location: http://{$_SERVER['HTTP_HOST']}/index.php/thread/{$id}");
+                header("Location: http://{$_SERVER['HTTP_HOST']}{$path}/thread/{$id}");
                 exit;
             }else{
-                header("Location: http://{$_SERVER['HTTP_HOST']}/index.php");
+                header("Location: http://{$_SERVER['HTTP_HOST']}{$path}");
                 exit;
             }
         }
@@ -63,7 +59,7 @@ $app->post('/', function() use ($app){
 $app->get('/thread/:id', function($id) use ($app){
         $board = new Board();
         $list = $board->accessDB('getcontents',$id);
-        return $app->render( 'thread_contents.html', array('thread_index'=>$id, 'data_ary'=>$list) );
+        return $app->render( 'thread_contents.html', array( 'thread_index'=>$id, 'data_ary'=>$list) );
     })->conditions(array('id'=>'[0-9]+'));
 
 // ADD COMMENT
@@ -74,11 +70,12 @@ $app->post('/thread/:id', function($id) use ($app){
         $contents = $request->post('contents');
         $is_set = $board->accessDB( 'setcontents', array($id, $contents, $author) );
         if($is_set){
-            header("Location: http://{$_SERVER['HTTP_HOST']}/index.php/thread/{$id}");
-            exit;
+            $path = substr( $_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'],'/') );
+            header("Location: http://{$_SERVER['HTTP_HOST']}{$path}/thread/{$id}");
+            exit;            
         }else{
             $list = $board->accessDB('getlist', null);
-            return $app->render( 'thread_list.html', array('data_ary'=>$list) );
+            return $app->render( 'thread_list.html', array( 'data_ary'=>$list) );
         }
     })->conditions(array('id'=>'[0-9]+'));
 

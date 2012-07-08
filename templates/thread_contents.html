@@ -1,3 +1,5 @@
+{{assign var='search_index' value=$smarty.server.SCRIPT_NAME|strrpos:'/'}}
+{{assign var='path' value=$smarty.server.SCRIPT_NAME|substr:0:$search_index|escape}}
 {{include file="header.html"}}
 <div id="wrapper_all">
   {{include file="nav.html"}}
@@ -14,7 +16,7 @@
       {{/foreach}}
       <section class="res_box res_form">
 	<!--<form action="index.php" method="POST" accept-charset="UTF-8" name="post_form" onsubmit="return check_form()">-->
-	<form action="http://{{$smarty.server.HTTP_HOST|escape}}{{$smarty.server.PHP_SELF|escape}}" method="POST" accept-charset="UTF-8" name="post_form" onsubmit="return check_form()">
+	<form action="http://{{$smarty.server.HTTP_HOST|escape}}{{$path}}/thread/{{$thread_index|escape}}" method="POST" accept-charset="UTF-8" name="post_form" onsubmit="return check_form()">
 	  <p>投稿者: <input type="text" name="author" /></p>
 	  <p>コメント: <textarea rows="4" cols="40" name="contents"></textarea></p>
 	  <input type="hidden" name="index" value="{{$thread_index|escape}}" />
