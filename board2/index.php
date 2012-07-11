@@ -6,6 +6,7 @@ require LIBS.'Slim/Slim.php';
 require LIBS.'Slim/SmartyView.php';
 require LIBS.'MySmarty.class.php';
 require LIBS.'BoardDB.php';
+
 $app = new Slim(array(
                       'debug' => false,
                       'templates.path' => '../templates',
@@ -22,8 +23,7 @@ $app->get('/', function() use ($app){
             }
             return $app->render( 'cushion.html', array('url'=>$url) );
         }
-        $board = new Board();
-        $list = $board->accessDB('getlist', null);
+        $list = Board::accessDB('getlist', null);
         return $app->render( 'thread_list.html', array('data_ary'=>$list) );
     });
 
@@ -34,16 +34,15 @@ $app->get('/new', function() use ($app){
 
 // ADD THREAD
 $app->post('/', function() use ($app){
-        $board = new Board();
         $request = $app->request();
         $title = $request->post('title');
         $author = $request->post('author');
         $contents = $request->post('contents');
         $path = substr( $_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'],'/') );
         if( !empty($title) && !empty($author) && !empty($contents) ){
-            $id = $board->accessDB('setthread',$title);
+            $id = Board::accessDB('setthread',$title);
             if($id !== false){
-                $is_set = $board->accessDB( 'setcontents', array($id, $contents, $author) );
+                $is_set = Board::accessDB( 'setcontents', array($id, $contents, $author) );
                 header("Location: http://{$_SERVER['HTTP_HOST']}{$path}/thread/{$id}");
                 exit;
             }else{
@@ -57,24 +56,22 @@ $app->post('/', function() use ($app){
 
 // READ THREAD
 $app->get('/thread/:id', function($id) use ($app){
-        $board = new Board();
-        $list = $board->accessDB('getcontents',$id);
+        $list = Board::accessDB('getcontents',$id);
         return $app->render( 'thread_contents.html', array( 'thread_index'=>$id, 'data_ary'=>$list) );
     })->conditions(array('id'=>'[0-9]+'));
 
 // ADD COMMENT
 $app->post('/thread/:id', function($id) use ($app){
-        $board = new Board();
         $request = $app->request();
         $author = $request->post('author');
         $contents = $request->post('contents');
-        $is_set = $board->accessDB( 'setcontents', array($id, $contents, $author) );
+        $is_set = Board::accessDB( 'setcontents', array($id, $contents, $author) );
         if($is_set){
             $path = substr( $_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'],'/') );
             header("Location: http://{$_SERVER['HTTP_HOST']}{$path}/thread/{$id}");
             exit;            
         }else{
-            $list = $board->accessDB('getlist', null);
+            $list = Board::accessDB('getlist', null);
             return $app->render( 'thread_list.html', array( 'data_ary'=>$list) );
         }
     })->conditions(array('id'=>'[0-9]+'));
@@ -83,20 +80,20 @@ $app->post('/thread/:id', function($id) use ($app){
 $app->run();
 
 class Board{
-    /**
-     * BoardDBへのアクセス
-     **/
-    public function accessDB($act, $param){
+    // BoardDBへのアクセス
+    public static function accessDB($act, $param){
         $bdb = new BoardDB();
+        $pdo = $bdb->getPDO();
+        if( empty($pdo) ) return false;
         switch($act){
         case 'setthread':
-            return $bdb->setNewThread($param);
+            return $bdb->setNewThread($pdo, $param);
         case 'setcontents':
-            return $bdb->setResponse($param);
+            return $bdb->setResponse($pdo, $param);
         case 'getlist':
-            return $bdb->getThreadList();
+            return $bdb->getThreadList($pdo);
         case 'getcontents':
-            return $bdb->getThreadContents($param);
+            return $bdb->getThreadContents($pdo, $param);
         default:
             return false;
         }
