@@ -13,47 +13,55 @@ class BoardDB{
     }
     public function getThreadList($db){
         if( empty($db) ) return false;
-        $stmt = $db->query("(SELECT thread_id,contents,id FROM response GROUP BY thread_id) UNION (SELECT f.thread_id, f.contents, f.id FROM (SELECT thread_id, max(id) AS max_id FROM response GROUP BY thread_id) AS x INNER JOIN response AS f ON f.thread_id = x.thread_id AND f.id >= x.max_id-1 ORDER BY thread_id);");
-        $contents = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt = $db->query('SELECT id,title,last_update FROM thread ORDER BY last_update DESC');
-        $titles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        // 返り値配列に整形
-        $result = array();
-        $indexAry = array();
-        foreach($titles AS $tt){
-            $id = $tt['id'];
-            $title = $tt['title'];
-            $index = count($result);
-            $result[$index]['id'] = $id;
-            $result[$index]['title'] = $title;
-            $result[$index]['res'] = array();
-            $indexAry[$id] = $index;
-        }
-        foreach($contents AS $con){
-            if(isset($indexAry[$con['thread_id']])){
-                $index = $indexAry[$con['thread_id']];
-                $result[$index]['res'][] = array('contents'=>$con['contents']);
+        try{
+            $stmt = $db->query("(SELECT thread_id,contents,id FROM response GROUP BY thread_id) UNION (SELECT f.thread_id, f.contents, f.id FROM (SELECT thread_id, max(id) AS max_id FROM response GROUP BY thread_id) AS x INNER JOIN response AS f ON f.thread_id = x.thread_id AND f.id >= x.max_id-1 ORDER BY thread_id);");
+            $contents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt = $db->query('SELECT id,title,last_update FROM thread ORDER BY last_update DESC');
+            $titles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // 返り値配列に整形
+            $result = array();
+            $indexAry = array();
+            foreach($titles AS $tt){
+                $id = $tt['id'];
+                $title = $tt['title'];
+                $index = count($result);
+                $result[$index]['id'] = $id;
+                $result[$index]['title'] = $title;
+                $result[$index]['res'] = array();
+                $indexAry[$id] = $index;
             }
+            foreach($contents AS $con){
+                if(isset($indexAry[$con['thread_id']])){
+                    $index = $indexAry[$con['thread_id']];
+                    $result[$index]['res'][] = array('contents'=>$con['contents']);
+                }
+            }
+            return $result;
+        }catch(Exception $e){
+            return array();
         }
-        return $result;
     }
     /**
      * あるスレッドの中身をすべて取得
      **/
     public function getThreadContents($db, $thread_index){
         if( empty($db) ) return false;
-        $sql = "SELECT title FROM thread WHERE id=:thread";
-        $param = array(':thread'=>$thread_index);
-        $stmt = $db->prepare($sql);
-        $stmt->execute($param);
-        $title = $stmt->fetch(PDO::FETCH_COLUMN,0);
-        $sql = "SELECT id, contents, author, date FROM response WHERE thread_id=:thread";
-        $stmt = $db->prepare($sql);
-        $stmt->execute($param);
-        $contents = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        // 返り値配列に整形
-        $result = array('title'=>$title,'res'=>$contents);
-        return $result;
+        try{
+            $sql = "SELECT title FROM thread WHERE id=:thread";
+            $param = array(':thread'=>$thread_index);
+            $stmt = $db->prepare($sql);
+            $stmt->execute($param);
+            $title = $stmt->fetch(PDO::FETCH_COLUMN,0);
+            $sql = "SELECT id, contents, author, date FROM response WHERE thread_id=:thread";
+            $stmt = $db->prepare($sql);
+            $stmt->execute($param);
+            $contents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // 返り値配列に整形
+            $result = array('title'=>$title,'res'=>$contents);
+            return $result;
+        }catch(Exception $e){
+            return array();
+        }
     }
     /**
      * 新しいスレッドを追加
