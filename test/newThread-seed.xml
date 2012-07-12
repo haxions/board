@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+  <newthread
+      id="1"
+      title="人間っていいなぁ"
+      />
+  <newthread
+      id="2"
+      title="テスト板"
+      />
+  <newthread
+      id="3"
+      title="PHPUnitTest"
+      />
+  <newthread
+      id="4"
+      title="newThread"
+      />
+<newresponse
+    no="1"
+    thread_id="1"
+    id="0"
+    contents="レス1"
+    author="名無し"
+    />
+<newresponse
+    no="2"
+    thread_id="1"
+    id="1"
+    contents="レス2"
+    author="名無し"
+    />
+<newresponse
+    no="3"
+    thread_id="1"
+    id="2"
+    contents="レス3"
+    author="名無し"
+    />
+<newresponse
+    no="4"
+    thread_id="1"
+    id="3"
+    contents="レス4"
+    author="名無し"
+    />
+<newresponse
+    no="5"
+    thread_id="2"
+    id="0"
+    contents="レス1"
+    author="名無し"
+    />
+<newresponse
+    no="6"
+    thread_id="4"
+    id="0"
+    contents="新しいスレ立ててみた"
+    author="名無し"
+    />
+</dataset>

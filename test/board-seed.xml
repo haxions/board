@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+  <thread
+      title="人間っていいなぁ"
+      last_update="2012-01-01 00:00:00"
+      />
+  <thread
+      title="テスト板"
+      last_update="2012-01-02 00:00:00"
+      />
+  <thread
+      title="PHPUnitTest"
+      last_update="2012-01-03 00:00:00"
+      />
+<response
+    no="1"
+    thread_id="1"
+    id="0"
+    contents="レス1"
+    author="名無し"
+    date="2012-01-01 02:00:00"
+    />
+<response
+    no="2"
+    thread_id="1"
+    id="1"
+    contents="レス2"
+    author="名無し"
+    date="2012-01-01 02:00:00"
+    />
+<response
+    no="3"
+    thread_id="1"
+    id="2"
+    contents="レス3"
+    author="名無し"
+    date="2012-01-01 02:00:00"
+    />
+<response
+    no="4"
+    thread_id="1"
+    id="3"
+    contents="レス4"
+    author="名無し"
+    date="2012-01-01 02:00:00"
+    />
+<response
+    no="5"
+    thread_id="2"
+    id="0"
+    contents="レス1"
+    author="名無し"
+    date="2012-01-01 02:00:00"
+    />
+</dataset>
